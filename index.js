@@ -17,17 +17,16 @@ function successfulLookup(position) {
   latitude = position.coords.latitude;
   longitude = position.coords.longitude;
 
-  getLocationWeather(latitude, longitude);
+  getCurrrentLocationWeather(latitude, longitude);
 }
 
-async function getLocationWeather(lat, lon) {
+async function getCurrrentLocationWeather(lat, lon) {
   const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_key}&units=metric`;
   try {
     const response = await fetch(URL, { mode: "cors" });
-    const weatherData = await response.json();
+    const data = await response.json();
+    const weatherData = processData(data);
     console.log(weatherData);
-    const test = processData(weatherData);
-    console.log(test);
   } catch (error) {
     console.log(error);
   }
@@ -42,4 +41,30 @@ function processData(weatherData) {
     description: weatherData.weather[0].description,
   };
   return data;
+}
+
+// get wanted location weather
+async function getTargetCityWeather() {
+  const cityName = document.querySelector("input").value;
+  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_key}&units=metric`;
+  try {
+    const response = await fetch(URL, { mode: "cors" });
+    const data = await response.json();
+    const locationWeather = processData(data);
+    console.log(locationWeather);
+    cityName = "";
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+document
+  .querySelector(".search-btn")
+  .addEventListener("click", getTargetCityWeather);
+
+async function getForecast() {
+  const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=current,minutely,hourly,alerts&appid=${API_key}`;
+  const res = await fetch(URL);
+  const data = await res.json();
+  console.log(data);
 }
