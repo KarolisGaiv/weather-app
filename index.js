@@ -5,7 +5,9 @@ let longitude;
 const celsius = "&#8451";
 
 // Selectors and event listeners
-document.querySelector(".search-btn").addEventListener("click", getForecast);
+document.querySelector(".search-btn").addEventListener("click", () => {
+  getForecast();
+});
 
 // Functions
 getUserLocation();
@@ -91,10 +93,12 @@ async function getDefaultCityWeather() {
 async function getForecast() {
   const card = document.querySelector(".card");
   const cityCoordinates = await getCoordinates();
-  const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${cityCoordinates.lat}&lon=${cityCoordinates.lon}&exclude=minutely,hourly,alerts&appid=${API_key}`;
+  const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${cityCoordinates.lat}&lon=${cityCoordinates.lon}&exclude=current,minutely,hourly,alerts&appid=${API_key}&units=metric`;
   const res = await fetch(URL);
   const data = await res.json();
   console.log(data);
+  const forecast = processForecastData(data);
+  console.log(forecast);
   card.innerHTML = data.daily[0].temp.max;
 }
 
@@ -109,4 +113,20 @@ async function getCoordinates() {
     lon: data.coord.lon,
   };
   return coord;
+}
+
+function processForecastData(forecastData) {
+  let weekForecasts = forecastData.daily;
+
+  let forecastArray = [];
+
+  for (let forecast of weekForecasts) {
+    const dayForecast = {
+      minTemp: forecast.temp.min,
+      maxTemp: forecast.temp.max,
+      description: forecast.weather[0].description,
+    };
+    forecastArray.push(dayForecast);
+  }
+  return forecastArray;
 }
