@@ -4,16 +4,40 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <title>Weather App</title>
   </head>
   <body>
     <script type="module" src="index.js"></script>
-
-    <div>
-      <form>
-        <input type="text" placeholder="Enter City" />
-      </form>
-      <button type="submit" class="search-btn">Search</button>
-    </div>
+    <main>
+      <section class="glass">
+        <div class="dashboard">
+          <div class="weather-info">
+            <h2 class="location-name"></h2>
+            <img
+              src="http://openweathermap.org/img/wn/10d@2x.png"
+              class="weather-icon"
+            />
+            <p class="weather-description"></p>
+          </div>
+          <div class="temperatures">
+            <div class="temperature"><h1 class="current-temp"></h3></div>
+            <div class="temperature"><h4 class="max-temp"></h4></div>
+            <div class="temperature"><h5 class="min-temp"></h4></div>
+          </div>
+        </div>
+        <div class="forecast">
+          <div class="search-wrapper">
+            <form>
+              <input type="text" placeholder="Enter City" />
+            </form>
+            <button type="submit" class="search-btn">Search</button>
+          </div>
+          <div class="cards-wrapper">
+            <div class="card"></div>
+          </div>
+        </div>
+      </section>
+    </main>
   </body>
 </html>
