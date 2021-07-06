@@ -9,7 +9,7 @@ function getLocation() {
   if (window.navigator.geolocation) {
     window.navigator.geolocation.getCurrentPosition(
       successfulLookup,
-      console.log
+      defaultLookup
     );
   }
 }
@@ -19,6 +19,9 @@ function successfulLookup(position) {
   longitude = position.coords.longitude;
 
   getCurrrentLocationWeather(latitude, longitude);
+}
+function defaultLookup() {
+  getDefaultCityWeather();
 }
 
 async function getCurrrentLocationWeather(lat, lon) {
@@ -58,16 +61,23 @@ function processData(weatherData) {
   return data;
 }
 
-// get wanted location weather
-async function getTargetCityWeather() {
-  let cityName = document.querySelector("input");
-  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName.value}&appid=${API_key}&units=metric`;
+async function getDefaultCityWeather() {
+  const defaultCity = "Harare";
+  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${defaultCity}&appid=${API_key}&units=metric`;
+  const weatherDescription = document.querySelector(".weather-description");
+  const locationName = document.querySelector(".location-name");
+  const currentTemp = document.querySelector(".current-temp");
+  const maxTemp = document.querySelector(".max-temp");
+  const minTemp = document.querySelector(".min-temp");
   try {
     const response = await fetch(URL, { mode: "cors" });
     const data = await response.json();
-    const locationWeather = processData(data);
-    console.log(data);
-    cityName.value = "";
+    const weatherData = processData(data);
+    weatherDescription.innerHTML = weatherData.description;
+    locationName.innerHTML = `${weatherData.location}, ${weatherData.country}`;
+    currentTemp.innerHTML = weatherData.currentTemp + celsius;
+    maxTemp.innerHTML = weatherData.maxTemp + celsius;
+    minTemp.innerHTML = weatherData.minTemp + celsius;
   } catch (error) {
     console.log(error);
   }
@@ -80,8 +90,9 @@ async function getForecast() {
   const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=current,minutely,hourly,alerts&appid=${API_key}`;
   const res = await fetch(URL);
   const data = await res.json();
-  card.innerHTML = data.daily[0].temp.max;
+  console.log(data);
+  // card.innerHTML = data.daily[0].temp.max;
   // const weatherForecast = processData(data);
   // console.log(weatherForecast);
-  console.log(data);
+  // console.log(data);
 }
