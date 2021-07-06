@@ -1,11 +1,16 @@
+// Global variables
 const API_key = "7ad8fbf6434376408725f165c56e002d";
 let latitude;
 let longitude;
 const celsius = "&#8451";
 
-getLocation();
+// Selectors and event listeners
+document.querySelector(".search-btn").addEventListener("click", getForecast);
 
-function getLocation() {
+// Functions
+getUserLocation();
+
+function getUserLocation() {
   if (window.navigator.geolocation) {
     window.navigator.geolocation.getCurrentPosition(
       successfulLookup,
@@ -20,6 +25,7 @@ function successfulLookup(position) {
 
   getCurrrentLocationWeather(latitude, longitude);
 }
+
 function defaultLookup() {
   getDefaultCityWeather();
 }
@@ -54,7 +60,6 @@ function processData(weatherData) {
     currentTemp: Math.round(weatherData.main.temp),
     minTemp: Math.round(weatherData.main.temp_min),
     maxTemp: Math.round(weatherData.main.temp_max),
-    humidity: weatherData.main.humidity,
     description: weatherData.weather[0].description,
     icon: weatherData.weather[0].icon,
   };
@@ -83,16 +88,25 @@ async function getDefaultCityWeather() {
   }
 }
 
-document.querySelector(".search-btn").addEventListener("click", getForecast);
-
 async function getForecast() {
   const card = document.querySelector(".card");
-  const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=current,minutely,hourly,alerts&appid=${API_key}`;
+  const cityCoordinates = await getCoordinates();
+  const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${cityCoordinates.lat}&lon=${cityCoordinates.lon}&exclude=minutely,hourly,alerts&appid=${API_key}`;
   const res = await fetch(URL);
   const data = await res.json();
   console.log(data);
-  // card.innerHTML = data.daily[0].temp.max;
-  // const weatherForecast = processData(data);
-  // console.log(weatherForecast);
-  // console.log(data);
+  card.innerHTML = data.daily[0].temp.max;
+}
+
+async function getCoordinates() {
+  const targetCity = document.querySelector("input");
+  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${targetCity.value}&appid=${API_key}&units=metric`;
+  const response = await fetch(URL);
+  const data = await response.json();
+  targetCity.value = "";
+  const coord = {
+    lat: data.coord.lat,
+    lon: data.coord.lon,
+  };
+  return coord;
 }
