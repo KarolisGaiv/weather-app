@@ -42,6 +42,7 @@ main {
 
 .forecast {
   flex: 2;
+  margin: 1rem;
 }
 
 form {
@@ -50,7 +51,6 @@ form {
 
 .search-wrapper {
   display: flex;
-  margin: 1rem;
   justify-content: center;
 }
 
@@ -85,4 +85,17 @@ form {
 
 .cards-wrapper {
   margin-bottom: 3rem;
+}
+
+.card {
+  display: flex;
+  background: linear-gradient(
+    to left top,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.5)
+  );
+  border-radius: 1rem;
+  margin: 2rem 0rem;
+  padding: 2rem;
+  box-shadow: 6px 6px 20px rgba(122, 122, 122, 0.212);
 }
