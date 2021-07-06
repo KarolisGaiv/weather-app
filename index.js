@@ -91,7 +91,7 @@ async function getDefaultCityWeather() {
 }
 
 async function getForecast() {
-  const card = document.querySelector(".card");
+  // const card = document.querySelector(".card");
   const cityCoordinates = await getCoordinates();
   const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${cityCoordinates.lat}&lon=${cityCoordinates.lon}&exclude=current,minutely,hourly,alerts&appid=${API_key}&units=metric`;
   const res = await fetch(URL);
@@ -99,7 +99,8 @@ async function getForecast() {
   console.log(data);
   const forecast = processForecastData(data);
   console.log(forecast);
-  card.innerHTML = data.daily[0].temp.max;
+  displayForecast(forecast);
+  // card.innerHTML = data.daily[0].temp.max;
 }
 
 async function getCoordinates() {
@@ -117,7 +118,6 @@ async function getCoordinates() {
 
 function processForecastData(forecastData) {
   let weekForecasts = forecastData.daily;
-
   let forecastArray = [];
 
   for (let forecast of weekForecasts) {
@@ -128,5 +128,35 @@ function processForecastData(forecastData) {
     };
     forecastArray.push(dayForecast);
   }
+
   return forecastArray;
+}
+
+function displayForecast(forecast) {
+  for (let day of forecast) {
+    createForecastCard(day);
+  }
+}
+
+function createForecastCard(object) {
+  const card = document.createElement("div");
+  card.className = "card";
+  const icon = document.createElement("div");
+  icon.className = "icon";
+  card.appendChild(icon);
+  const infoContainer = document.createElement("div");
+  infoContainer.className = "info";
+  card.appendChild(infoContainer);
+  const weatherDescription = document.createElement("p");
+  weatherDescription.innerHTML = object.description;
+  infoContainer.appendChild(weatherDescription);
+  const maxTemp = document.createElement("h4");
+  maxTemp.innerHTML = object.maxTemp;
+  infoContainer.appendChild(maxTemp);
+  const minTemp = document.createElement("h5");
+  minTemp.innerHTML = object.minTemp;
+  infoContainer.appendChild(minTemp);
+
+  const cardContainer = document.querySelector(".cards-wrapper");
+  cardContainer.appendChild(card);
 }
