@@ -1,6 +1,7 @@
 const API_key = "7ad8fbf6434376408725f165c56e002d";
 let latitude;
 let longitude;
+const celsius = "&#8451";
 
 getLocation();
 
@@ -34,9 +35,9 @@ async function getCurrrentLocationWeather(lat, lon) {
     const weatherData = processData(data);
     weatherDescription.innerHTML = weatherData.description;
     locationName.innerHTML = `${weatherData.location}, ${weatherData.country}`;
-    currentTemp.innerHTML = weatherData.currentTemp;
-    maxTemp.innerHTML = weatherData.maxTemp;
-    minTemp.innerHTML = weatherData.minTemp;
+    currentTemp.innerHTML = weatherData.currentTemp + celsius;
+    maxTemp.innerHTML = weatherData.maxTemp + celsius;
+    minTemp.innerHTML = weatherData.minTemp + celsius;
     console.log(weatherData);
   } catch (error) {
     console.log(error);

@@ -9,7 +9,7 @@
   </head>
   <body>
     <script type="module" src="index.js"></script>
-    
+
     <main>
       <section class="glass">
         <div class="dashboard">
@@ -22,15 +22,26 @@
             <p class="weather-description"></p>
           </div>
           <div class="temperatures">
-            <div class="temperature"><h1 class="current-temp"></h3></div>
-            <div class="temperature"><h4 class="max-temp"></h4></div>
-            <div class="temperature"><h5 class="min-temp"></h4></div>
+            <div class="current-temp-wrapper">
+              <p>Current Temperature</p>
+              <h1 class="current-temp"></h1>
+            </div>
+            <div class="day-temp-wrapper">
+              <p>Highest</p>
+              <h4 class="max-temp"></h4>
+              <p>Lowest</p>
+              <h5 class="min-temp"></h5>
+            </div>
           </div>
         </div>
         <div class="forecast">
           <div class="search-wrapper">
             <form>
-              <input type="text" placeholder="Enter City" class="search-field"/>
+              <input
+                type="text"
+                placeholder="Enter City"
+                class="search-field"
+              />
             </form>
             <button type="submit" class="search-btn">Search</button>
           </div>

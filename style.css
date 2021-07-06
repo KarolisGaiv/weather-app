@@ -38,6 +38,34 @@ main {
     rgba(255, 255, 255, 0.3)
   );
   border-radius: 2rem;
+  padding: 1rem;
+}
+
+.current-temp-wrapper {
+  border: 2px solid #3da0ae;
+  border-radius: 2rem;
+  padding: 1rem;
+  background: linear-gradient(
+    to left top,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.5)
+  );
+  margin: 10px 0;
+}
+
+.current-temp-wrapper p {
+  margin-bottom: 10px;
+}
+
+.day-temp-wrapper {
+  border: 1px solid #21a895;
+  background: linear-gradient(
+    to left top,
+    rgba(255, 255, 255, 0.8),
+    rgba(255, 255, 255, 0.5)
+  );
+  border-radius: 2rem;
+  padding: 0.5rem;
 }
 
 .forecast {
