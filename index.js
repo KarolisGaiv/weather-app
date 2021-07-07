@@ -91,7 +91,6 @@ async function getDefaultCityWeather() {
 }
 
 async function getForecast() {
-  // const card = document.querySelector(".card");
   const cityCoordinates = await getCoordinates();
   const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${cityCoordinates.lat}&lon=${cityCoordinates.lon}&exclude=current,minutely,hourly,alerts&appid=${API_key}&units=metric`;
   const res = await fetch(URL);
@@ -100,7 +99,6 @@ async function getForecast() {
   const forecast = processForecastData(data);
   console.log(forecast);
   displayForecast(forecast);
-  // card.innerHTML = data.daily[0].temp.max;
 }
 
 async function getCoordinates() {
@@ -122,9 +120,10 @@ function processForecastData(forecastData) {
 
   for (let forecast of weekForecasts) {
     const dayForecast = {
-      minTemp: forecast.temp.min,
-      maxTemp: forecast.temp.max,
+      minTemp: Math.round(forecast.temp.min),
+      maxTemp: Math.round(forecast.temp.max),
       description: forecast.weather[0].description,
+      icon: forecast.weather[0].icon,
     };
     forecastArray.push(dayForecast);
   }
@@ -141,9 +140,12 @@ function displayForecast(forecast) {
 function createForecastCard(object) {
   const card = document.createElement("div");
   card.className = "card";
-  const icon = document.createElement("div");
-  icon.className = "icon";
-  card.appendChild(icon);
+  const iconWrapper = document.createElement("div");
+  iconWrapper.className = "weather-icon";
+  const weatherIcon = document.createElement("img");
+  weatherIcon.src = `icons/${object.icon}.png`;
+  iconWrapper.appendChild(weatherIcon);
+  card.appendChild(iconWrapper);
   const infoContainer = document.createElement("div");
   infoContainer.className = "info";
   card.appendChild(infoContainer);

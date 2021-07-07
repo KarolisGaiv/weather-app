@@ -43,6 +43,10 @@ main {
   padding: 1rem;
 }
 
+.weather-description {
+  text-transform: capitalize;
+}
+
 .current-temp-wrapper {
   border: 2px solid #3da0ae;
   border-radius: 2rem;
@@ -132,4 +136,10 @@ form {
   margin: 2rem 0rem;
   padding: 2rem;
   box-shadow: 6px 6px 20px rgba(122, 122, 122, 0.212);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info {
+  text-transform: capitalize;
 }
