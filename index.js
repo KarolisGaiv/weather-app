@@ -6,7 +6,6 @@ const celsius = "&#8451";
 
 // Selectors and event listeners
 document.querySelector(".search-btn").addEventListener("click", (e) => {
-  // getForecast();
   showForecast();
 });
 
@@ -26,7 +25,6 @@ async function successfulLookup(position) {
   latitude = position.coords.latitude;
   longitude = position.coords.longitude;
 
-  // getCurrrentLocationWeather(latitude, longitude);
   const city = await getLocationName(latitude, longitude);
   const cityWeather = await getCurrentWeather(city);
   showCurrentWeather(cityWeather);
@@ -36,27 +34,83 @@ async function defaultLookup() {
   let city = "Boston";
   const cityWeather = await getCurrentWeather(city);
   showCurrentWeather(cityWeather);
-  // getDefaultCityWeather();
 }
 
-async function getCurrrentLocationWeather(lat, lon) {
+async function getLocationName(lat, lon) {
   const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_key}&units=metric`;
+  try {
+    const response = await fetch(URL, { mode: "cors" });
+    const data = await response.json();
+    const locationName = data.name;
+    return locationName;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getCurrentWeather(city) {
+  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_key}&units=metric`;
+  try {
+    const response = await fetch(URL, { mode: "cors" });
+    const data = await response.json();
+    const currentWeatherData = processData(data);
+    return currentWeatherData;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function showCurrentWeather(weatherInfo) {
+  const weatherIcon = document.querySelector(".weather-icon");
   const weatherDescription = document.querySelector(".weather-description");
   const locationName = document.querySelector(".location-name");
   const currentTemp = document.querySelector(".current-temp");
   const maxTemp = document.querySelector(".max-temp");
   const minTemp = document.querySelector(".min-temp");
+
+  weatherIcon.src = `icons/${weatherInfo.icon}.png`;
+  weatherDescription.innerHTML = weatherInfo.description;
+  locationName.innerHTML = `${weatherInfo.location}, ${weatherInfo.country}`;
+  currentTemp.innerHTML = weatherInfo.currentTemp + celsius;
+  maxTemp.innerHTML = weatherInfo.maxTemp + celsius;
+  minTemp.innerHTML = weatherInfo.minTemp + celsius;
+}
+
+async function showForecast() {
+  // get and display forecast data for searched place
+  const coordinates = await getCoordinates();
+  const forecastData = await getForecastData(coordinates);
+  const forecastArray = processForecastData(forecastData);
+  displayForecast(forecastArray);
+  // get and display searched place current weather
+  const city = await getLocationName(coordinates.lat, coordinates.lon);
+  const cityWeather = await getCurrentWeather(city);
+  showCurrentWeather(cityWeather);
+}
+
+async function getCoordinates() {
+  const cityName = document.querySelector("input");
+  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName.value}&appid=${API_key}&units=metric`;
   try {
-    const response = await fetch(URL, { mode: "cors" });
+    const response = await fetch(URL);
     const data = await response.json();
-    console.log(data);
-    const weatherData = processData(data);
-    weatherDescription.innerHTML = weatherData.description;
-    locationName.innerHTML = `${weatherData.location}, ${weatherData.country}`;
-    currentTemp.innerHTML = weatherData.currentTemp + celsius;
-    maxTemp.innerHTML = weatherData.maxTemp + celsius;
-    minTemp.innerHTML = weatherData.minTemp + celsius;
-    console.log(weatherData);
+    cityName.value = "";
+    const coord = {
+      lat: data.coord.lat,
+      lon: data.coord.lon,
+    };
+    return coord;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getForecastData(coordinates) {
+  const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&exclude=current,minutely,hourly,alerts&appid=${API_key}&units=metric`;
+  try {
+    const res = await fetch(URL);
+    const data = await res.json();
+    return data;
   } catch (error) {
     console.log(error);
   }
@@ -73,54 +127,6 @@ function processData(weatherData) {
     icon: weatherData.weather[0].icon,
   };
   return data;
-}
-
-async function getDefaultCityWeather() {
-  const defaultCity = "Harare";
-  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${defaultCity}&appid=${API_key}&units=metric`;
-  const weatherIcon = document.querySelector(".weather-icon");
-  const weatherDescription = document.querySelector(".weather-description");
-  const locationName = document.querySelector(".location-name");
-  const currentTemp = document.querySelector(".current-temp");
-  const maxTemp = document.querySelector(".max-temp");
-  const minTemp = document.querySelector(".min-temp");
-  try {
-    const response = await fetch(URL, { mode: "cors" });
-    const data = await response.json();
-    const weatherData = processData(data);
-    weatherIcon.src = `icons/${weatherData.icon}.png`;
-    weatherDescription.innerHTML = weatherData.description;
-    locationName.innerHTML = `${weatherData.location}, ${weatherData.country}`;
-    currentTemp.innerHTML = weatherData.currentTemp + celsius;
-    maxTemp.innerHTML = weatherData.maxTemp + celsius;
-    minTemp.innerHTML = weatherData.minTemp + celsius;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function getForecast() {
-  const cityCoordinates = await getCoordinates();
-  const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${cityCoordinates.lat}&lon=${cityCoordinates.lon}&exclude=current,minutely,hourly,alerts&appid=${API_key}&units=metric`;
-  const res = await fetch(URL);
-  const data = await res.json();
-  console.log(data);
-  const forecast = processForecastData(data);
-  console.log(forecast);
-  displayForecast(forecast);
-}
-
-async function getCoordinates() {
-  const targetCity = document.querySelector("input");
-  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${targetCity.value}&appid=${API_key}&units=metric`;
-  const response = await fetch(URL);
-  const data = await response.json();
-  targetCity.value = "";
-  const coord = {
-    lat: data.coord.lat,
-    lon: data.coord.lon,
-  };
-  return coord;
 }
 
 function processForecastData(forecastData) {
@@ -172,85 +178,4 @@ function createForecastCard(object) {
 
   const cardContainer = document.querySelector(".cards-wrapper");
   cardContainer.appendChild(card);
-}
-
-async function getCurrentWeather(city) {
-  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_key}&units=metric`;
-  try {
-    const response = await fetch(URL, { mode: "cors" });
-    const data = await response.json();
-    const currentWeatherData = processData(data);
-    return currentWeatherData;
-    // showCurrentWeather(currentWeatherData);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function showCurrentWeather(weatherInfo) {
-  const weatherIcon = document.querySelector(".weather-icon");
-  const weatherDescription = document.querySelector(".weather-description");
-  const locationName = document.querySelector(".location-name");
-  const currentTemp = document.querySelector(".current-temp");
-  const maxTemp = document.querySelector(".max-temp");
-  const minTemp = document.querySelector(".min-temp");
-
-  weatherIcon.src = `icons/${weatherInfo.icon}.png`;
-  weatherDescription.innerHTML = weatherInfo.description;
-  locationName.innerHTML = `${weatherInfo.location}, ${weatherInfo.country}`;
-  currentTemp.innerHTML = weatherInfo.currentTemp + celsius;
-  maxTemp.innerHTML = weatherInfo.maxTemp + celsius;
-  minTemp.innerHTML = weatherInfo.minTemp + celsius;
-}
-
-async function getLocationName(lat, lon) {
-  const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_key}&units=metric`;
-  try {
-    const response = await fetch(URL, { mode: "cors" });
-    const data = await response.json();
-    const locationName = data.name;
-    return locationName;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function getCoordinatesTest() {
-  const cityName = document.querySelector("input");
-  const URL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName.value}&appid=${API_key}&units=metric`;
-  try {
-    const response = await fetch(URL);
-    const data = await response.json();
-    cityName.value = "";
-    const coord = {
-      lat: data.coord.lat,
-      lon: data.coord.lon,
-    };
-    return coord;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function getForecastData(coordinates) {
-  const URL = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&exclude=current,minutely,hourly,alerts&appid=${API_key}&units=metric`;
-  try {
-    const res = await fetch(URL);
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function showForecast() {
-  // get and display forecast data for searched place
-  const coordinates = await getCoordinatesTest();
-  const forecastData = await getForecastData(coordinates);
-  const forecastArray = processForecastData(forecastData);
-  displayForecast(forecastArray);
-  // get and display searched place current weather
-  const city = await getLocationName(coordinates.lat, coordinates.lon);
-  const cityWeather = await getCurrentWeather(city);
-  showCurrentWeather(cityWeather);
 }
