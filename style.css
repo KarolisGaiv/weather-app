@@ -142,4 +142,9 @@ form {
 
 .info {
   text-transform: capitalize;
+  width: 160px;
+}
+
+img {
+  width: 50%;
 }
