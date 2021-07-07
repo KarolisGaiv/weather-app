@@ -15,6 +15,7 @@ main {
 .glass {
   background: white;
   min-height: 80vh;
+  max-height: 95vh;
   width: 60%;
   background: linear-gradient(
     to right bottom,
@@ -23,6 +24,7 @@ main {
   );
   border-radius: 2rem;
   display: flex;
+  overflow: auto;
 }
 
 .dashboard {
@@ -71,6 +73,7 @@ main {
 .forecast {
   flex: 2;
   margin: 1rem;
+  overflow: auto;
 }
 
 form {
@@ -80,6 +83,7 @@ form {
 .search-wrapper {
   display: flex;
   justify-content: center;
+  margin: 1rem 0;
 }
 
 .search-field {
@@ -114,6 +118,7 @@ form {
 
 .cards-wrapper {
   margin-bottom: 3rem;
+  padding: 1rem;
 }
 
 .card {
