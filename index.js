@@ -71,6 +71,7 @@ function processData(weatherData) {
 async function getDefaultCityWeather() {
   const defaultCity = "Harare";
   const URL = `https://api.openweathermap.org/data/2.5/weather?q=${defaultCity}&appid=${API_key}&units=metric`;
+  const weatherIcon = document.querySelector(".weather-icon");
   const weatherDescription = document.querySelector(".weather-description");
   const locationName = document.querySelector(".location-name");
   const currentTemp = document.querySelector(".current-temp");
@@ -80,6 +81,7 @@ async function getDefaultCityWeather() {
     const response = await fetch(URL, { mode: "cors" });
     const data = await response.json();
     const weatherData = processData(data);
+    weatherIcon.src = `icons/${weatherData.icon}.png`;
     weatherDescription.innerHTML = weatherData.description;
     locationName.innerHTML = `${weatherData.location}, ${weatherData.country}`;
     currentTemp.innerHTML = weatherData.currentTemp + celsius;
