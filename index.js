@@ -110,6 +110,7 @@ async function getForecastData(coordinates) {
   try {
     const res = await fetch(URL);
     const data = await res.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -133,15 +134,23 @@ function processForecastData(forecastData) {
   let weekForecasts = forecastData.daily;
   let forecastArray = [];
 
-  for (let forecast of weekForecasts) {
-    const dayForecast = {
-      minTemp: Math.round(forecast.temp.min),
-      maxTemp: Math.round(forecast.temp.max),
-      description: forecast.weather[0].description,
-      icon: forecast.weather[0].icon,
-    };
-    forecastArray.push(dayForecast);
-  }
+  weekForecasts.forEach((forecast, index) => {
+    // exclude today's data
+    if (index > 0) {
+      let dayName = new Date(forecast.dt * 1000).toLocaleDateString("en", {
+        weekday: "long",
+      });
+      const dayForecast = {
+        minTemp: Math.round(forecast.temp.min),
+        maxTemp: Math.round(forecast.temp.max),
+        description: forecast.weather[0].description,
+        icon: forecast.weather[0].icon,
+        day: dayName,
+      };
+      forecastArray.push(dayForecast);
+    }
+    return forecastArray;
+  });
 
   return forecastArray;
 }
