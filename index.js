@@ -166,23 +166,30 @@ function displayForecast(forecast) {
 function createForecastCard(object) {
   const card = document.createElement("div");
   card.className = "card";
+  const header = document.createElement("h2");
+  header.className = "weather-day";
+  header.innerHTML = object.day;
+  card.appendChild(header);
+  const cardBottom = document.createElement("div");
+  cardBottom.className = "card-bottom";
+  card.appendChild(cardBottom);
   const iconWrapper = document.createElement("div");
   iconWrapper.className = "weather-icon";
   const weatherIcon = document.createElement("img");
   weatherIcon.src = `icons/${object.icon}.png`;
   iconWrapper.appendChild(weatherIcon);
-  card.appendChild(iconWrapper);
+  cardBottom.appendChild(iconWrapper);
   const infoContainer = document.createElement("div");
   infoContainer.className = "info";
-  card.appendChild(infoContainer);
+  cardBottom.appendChild(infoContainer);
   const weatherDescription = document.createElement("p");
   weatherDescription.innerHTML = object.description;
   infoContainer.appendChild(weatherDescription);
   const maxTemp = document.createElement("h4");
-  maxTemp.innerHTML = object.maxTemp;
+  maxTemp.innerHTML = "Highest: " + object.maxTemp + celsius;
   infoContainer.appendChild(maxTemp);
   const minTemp = document.createElement("h5");
-  minTemp.innerHTML = object.minTemp;
+  minTemp.innerHTML = "Lowest: " + object.minTemp + celsius;
   infoContainer.appendChild(minTemp);
 
   const cardContainer = document.querySelector(".cards-wrapper");
