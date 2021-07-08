@@ -5,7 +5,8 @@ let longitude;
 const celsius = "&#8451";
 
 // Selectors and event listeners
-document.querySelector(".search-btn").addEventListener("click", (e) => {
+document.querySelector(".search-form").addEventListener("submit", (e) => {
+  e.preventDefault();
   showForecast();
 });
 
@@ -77,6 +78,12 @@ function showCurrentWeather(weatherInfo) {
 }
 
 async function showForecast() {
+  // check if user entered city
+  const userInput = document.querySelector(".search-field").value;
+  if (!userInput || userInput === " ") {
+    alert("Please enter city");
+    return;
+  }
   // get and display forecast data for searched place
   const coordinates = await getCoordinates();
   const forecastData = await getForecastData(coordinates);
@@ -110,7 +117,6 @@ async function getForecastData(coordinates) {
   try {
     const res = await fetch(URL);
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.log(error);

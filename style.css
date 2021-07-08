@@ -81,12 +81,10 @@ main {
 }
 
 form {
-  width: 70%;
+  display: flex;
 }
 
 .search-wrapper {
-  display: flex;
-  justify-content: center;
   margin: 1rem 0;
 }
 
@@ -113,7 +111,7 @@ form {
   border-radius: 2rem;
   cursor: pointer;
   margin: 0 15px;
-  width: 15%;
+  width: 20%;
 }
 
 .search-btn:hover {
